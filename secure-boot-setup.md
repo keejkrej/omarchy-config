@@ -147,6 +147,105 @@ You must complete these in UEFI/BIOS; they cannot be done from Linux:
    sudo omarchy-secureboot status
    ```
 
+## Appendix: Entering Setup Mode when the BIOS hides the option
+
+Some laptops (e.g. Razer Blade) ship with an AMI/Insyde UEFI firmware that hides the Secure Boot key-management menu. The usual **Reset to Setup Mode** or **Delete all Secure Boot variables** options are not exposed in the BIOS UI, and the relevant NVRAM bits are write-protected at runtime. In that case you cannot enter Setup Mode directly from Linux.
+
+The following **efitools + UEFI Shell** route works on firmwares where `CustomMode` can be enabled from a UEFI Shell. It is **not guaranteed** on every locked-down firmware.
+
+### Prerequisites
+
+- `efitools` and `edk2-shell` installed
+- `sbctl` keys already created (`omarchy-secureboot setup` does this)
+- `KeyTool.efi` and `UpdateVars.efi` from `efitools`
+
+### Step 1: Create a `noPK.auth` delete bundle
+
+Run as root:
+
+```bash
+GUID=$(cat /var/lib/sbctl/GUID)
+: > /tmp/noPK.esl
+sign-efi-sig-list -g "$GUID" \
+  -c /var/lib/sbctl/keys/PK/PK.pem \
+  -k /var/lib/sbctl/keys/PK/PK.key \
+  PK /tmp/noPK.esl /tmp/noPK.auth
+```
+
+### Step 2: Copy UEFI Shell and tools to the ESP
+
+Run as root:
+
+```bash
+pacman -S --needed edk2-shell
+mkdir -p /boot/EFI/tools
+cp /usr/share/edk2-shell/x64/Shell.efi /boot/shellx64.efi
+cp /tmp/noPK.auth /boot/EFI/tools/
+cp /path/to/KeyTool.efi /boot/EFI/tools/
+cp /path/to/UpdateVars.efi /boot/EFI/tools/
+```
+
+If you use Limine, add a temporary entry to `/boot/limine.conf`:
+
+```text
+/UEFI Shell
+    comment: UEFI Shell
+    protocol: efi
+    path: boot():/shellx64.efi
+```
+
+### Step 3: Boot into UEFI Shell
+
+Reboot and select the **UEFI Shell** entry.
+
+### Step 4: Enable UEFI Custom Mode
+
+At the UEFI Shell prompt:
+
+```text
+Shell> setvar CustomMode -guid c076ec0c-7028-4399-a072-71ee5c448b9f =H01
+```
+
+`CustomMode` is a BootService-only variable, so it must be written from a UEFI Shell, not from Linux. If this returns a write-protected/security error, the firmware locks it and this route is blocked.
+
+### Step 5: Delete the Platform Key
+
+```text
+Shell> fs0:
+FS0:\> cd EFI\tools
+FS0:\EFI\tools> UpdateVars PK noPK.auth
+```
+
+If `UpdateVars` is unavailable, use `KeyTool.efi` interactively:
+
+```text
+FS0:\EFI\tools> KeyTool.efi
+Edit Keys → PK → Replace → select noPK.auth → Save to NVRAM
+```
+
+Deleting the PK puts the firmware into **Setup Mode**.
+
+### Step 6: Back in Linux, enroll keys
+
+```bash
+sudo omarchy-secureboot enroll
+```
+
+### Step 7: Enable Secure Boot in BIOS
+
+Reboot, enter the firmware setup, and enable **Secure Boot**. Verify with:
+
+```bash
+sudo omarchy-secureboot status
+```
+
+### If this route fails
+
+If `setvar CustomMode` is write-protected, the firmware is intentionally blocking programmatic key management. Options then include:
+
+- **Razer `securebootrecovery.efi`**: Razer provides a recovery tool for some models. If you have Windows, copy `C:\Windows\Boot\EFI\securebootrecovery.efi` to a USB as `EFI/BOOT/BOOTX64.EFI`, boot it, and follow the prompts.
+- **BIOS mod**: Dump the firmware, use UEFITool and an IFR extractor to find the `RDMODE`/`SuppressIf` guarding the Secure Boot menu, patch it, and flash it back. This is risky and may require a hardware SPI programmer if the flash is locked.
+
 ## Windows / BitLocker Warning
 
 If Windows uses **BitLocker**, have the recovery key ready before running `sudo omarchy-secureboot enroll`. Enrolling custom Secure Boot keys usually triggers a one-time BitLocker recovery prompt on the next Windows boot.
