@@ -10,8 +10,6 @@ Hardware overlays stay in their own repos:
 
 ## What it does
 
-- **Bindings** — drop Omarchy's F9 / Ctrl+Super voxtype binds so dictation is
-  owned by voxtype / the machine overlay, not Hyprland.
 - **Monitors** — scale `1.6` for internal and hot-plugged displays. If the Duo
   overlay is installed, `hypr.duo.apply_monitors` runs first.
 - **Secure Boot** — Limine + sbctl notes in [secure-boot-setup.md](secure-boot-setup.md).

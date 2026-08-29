@@ -23,9 +23,7 @@
 -- Disable a default binding without replacing it.
 -- hl.unbind("SUPER + SHIFT + B")
 
--- Dictation is not a Hyprland bind. F9 was Omarchy's default voxtype PTT;
--- Ctrl+Super is owned by the machine overlay (Duo USB keyboard) or voxtype.
--- Super+Ctrl+X remains a toggle if recording ever sticks.
-hl.unbind("F9")
-hl.unbind("CTRL + SUPER_L")
-hl.unbind("SUPER + Control_L")
+-- Logitech MX Keys examples:
+-- o.bind("SUPER + SHIFT + S", nil, "omarchy-capture-screenshot")
+-- o.bind("SUPER + H", nil, "voxtype record toggle")
+-- o.bind("SUPER + PERIOD", nil, "omarchy-shell shell toggle omarchy.emojis")
