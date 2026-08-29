@@ -13,6 +13,8 @@ Hardware overlays stay in their own repos:
 - **Monitors** — scale `1.6` for internal and hot-plugged displays. If the Duo
   overlay is installed, `hypr.duo.apply_monitors` runs first.
 - **Secure Boot** — Limine + sbctl notes in [secure-boot-setup.md](secure-boot-setup.md).
+- **fx skills** — diagnosis and workaround for Omarchy's externally symlinked
+  skills in [fx-skill-discovery.md](fx-skill-discovery.md).
 
 ## Install
 
