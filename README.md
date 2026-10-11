@@ -1,7 +1,7 @@
 # Omarchy user config
 
-Machine-independent Omarchy customizations: Hyprland user files and notes that
-apply on any Omarchy machine.
+Omarchy user config for this desk. The monitor layout is specific to the
+MateView and ASUS XG27UCS. The other notes apply on any Omarchy machine.
 
 Hardware overlays stay in their own repos:
 
@@ -10,8 +10,9 @@ Hardware overlays stay in their own repos:
 
 ## What it does
 
-- **Monitors** — scale `1.6` for internal and hot-plugged displays. If the Duo
-  overlay is installed, `hypr.duo.apply_monitors` runs first.
+- **Monitors** — scale `2`. MateView on the left, ASUS XG27UCS on the right,
+  bottoms aligned. If the Duo overlay is installed, the built-in panels are
+  centered under that bar.
 - **Secure Boot** — Limine + sbctl notes in [secure-boot-setup.md](secure-boot-setup.md).
 - **fx skills** — diagnosis and workaround for Omarchy's externally symlinked
   skills in [fx-skill-discovery.md](fx-skill-discovery.md).
