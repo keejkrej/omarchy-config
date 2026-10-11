@@ -20,6 +20,12 @@ if ok and duo.apply_monitors then
   })
 end
 
+-- One line on purpose. Omarchy's clamshell sync only reads a single-line
+-- hl.monitor for the laptop output. Without it, that sync treats the
+-- scale-2 catch-all as eDP-1's scale and moves the panel back a second
+-- after every reload.
+hl.monitor({ output = "eDP-1", mode = "preferred", position = "1320x1280", scale = duo_scale })
+
 hl.monitor({
   output = "desc:Huawei Technologies Co. Inc. MateView",
   mode = "3840x2560@60",
