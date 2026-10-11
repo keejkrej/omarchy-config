@@ -3,19 +3,20 @@
 
 local omarchy_gdk_scale = 2
 local omarchy_monitor_scale = 2
+local duo_scale = 1.6
 
 hl.env("GDK_SCALE", tostring(omarchy_gdk_scale))
 
--- T at scale 2. Crossbar bottoms meet at y=1280:
+-- Externals stay at scale 2. Crossbar bottoms meet at y=1280:
 --   MateView      3840x2560 -> 1920x1280 at 0x0
 --   ASUS XG27UCS  3840x2160 -> 1920x1080 at 1920x200
--- Duo panels are 960x600, centered under the 3840-wide bar.
--- eDP-2 stays off while the keyboard is snapped onto that panel.
+-- Duo panels are 1920x1200 at scale 1.6 -> 1200x750, centered under the
+-- 3840-wide bar. eDP-2 stays off while the keyboard is snapped on.
 local ok, duo = pcall(require, "hypr.duo")
 if ok and duo.apply_monitors then
-  duo.apply_monitors(omarchy_monitor_scale, {
-    top = "1440x1280",
-    bottom = "1440x1880",
+  duo.apply_monitors(duo_scale, {
+    top = "1320x1280",
+    bottom = "1320x2030",
   })
 end
 

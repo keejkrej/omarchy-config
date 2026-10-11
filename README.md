@@ -10,9 +10,9 @@ Hardware overlays stay in their own repos:
 
 ## What it does
 
-- **Monitors** — scale `2`. MateView on the left, ASUS XG27UCS on the right,
-  bottoms aligned. If the Duo overlay is installed, the built-in panels are
-  centered under that bar.
+- **Monitors** — external scale `2`. MateView on the left, ASUS XG27UCS on the
+  right, bottoms aligned. If the Duo overlay is installed, the built-in panels
+  are scale `1.6` and centered under that bar.
 - **Secure Boot** — Limine + sbctl notes in [secure-boot-setup.md](secure-boot-setup.md).
 - **fx skills** — diagnosis and workaround for Omarchy's externally symlinked
   skills in [fx-skill-discovery.md](fx-skill-discovery.md).
